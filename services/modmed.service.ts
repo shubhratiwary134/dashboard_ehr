@@ -175,3 +175,114 @@ export async function getPatientMedications(patientId: string) {
     throw new Error("Failed to fetch patient medications");
   }
 }
+
+export async function getProviderSchedules(params: Record<string, any>) {
+  try {
+    if (!accessToken) {
+      await authenticateModMed();
+    }
+
+    const firmPrefix = process.env.MODMED_FIRM_PREFIX || "";
+    const response = await modmedApi.get(`${firmPrefix}/api/v1/schedules`, {
+      params,
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching provider schedules:", error);
+    throw new Error("Failed to fetch provider schedules");
+  }
+}
+
+export async function getAppointments(params: Record<string, any>) {
+  try {
+    if (!accessToken) {
+      await authenticateModMed();
+    }
+
+    const firmPrefix = process.env.MODMED_FIRM_PREFIX || "";
+    const response = await modmedApi.get(`${firmPrefix}/api/v1/appointments`, {
+      params,
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching appointments:", error);
+    throw new Error("Failed to fetch appointments");
+  }
+}
+
+export async function bookAppointment(appointmentData: any) {
+  try {
+    if (!accessToken) {
+      await authenticateModMed();
+    }
+
+    const firmPrefix = process.env.MODMED_FIRM_PREFIX || "";
+    const response = await modmedApi.post(
+      `${firmPrefix}/api/v1/appointments`,
+      appointmentData,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error booking appointment:", error);
+    throw new Error("Failed to book appointment");
+  }
+}
+
+export async function rescheduleAppointment(
+  appointmentId: string,
+  updateData: any
+) {
+  try {
+    if (!accessToken) {
+      await authenticateModMed();
+    }
+
+    const firmPrefix = process.env.MODMED_FIRM_PREFIX || "";
+    const response = await modmedApi.put(
+      `${firmPrefix}/api/v1/appointments/${appointmentId}`,
+      updateData,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error rescheduling appointment:", error);
+    throw new Error("Failed to reschedule appointment");
+  }
+}
+
+export async function cancelAppointment(appointmentId: string) {
+  try {
+    if (!accessToken) {
+      await authenticateModMed();
+    }
+
+    const firmPrefix = process.env.MODMED_FIRM_PREFIX || "";
+    const response = await modmedApi.delete(
+      `${firmPrefix}/api/v1/appointments/${appointmentId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error canceling appointment:", error);
+    throw new Error("Failed to cancel appointment");
+  }
+}
